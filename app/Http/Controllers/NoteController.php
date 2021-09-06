@@ -3,18 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Note;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class NoteController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the notes.
      *
-     * @return \Illuminate\Http\Response
+     * @return Collection
      */
     public function index()
     {
-        //
+        return Note::all();
     }
 
     /**
