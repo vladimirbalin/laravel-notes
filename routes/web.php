@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\NoteController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/api/notes', [\App\Http\Controllers\NoteController::class, 'index'])->name('notes');
+Route::apiResource('api/notes', NoteController::class, [''])
+    ->only(['index', 'store', 'update', 'destroy']);
 
 Auth::routes();

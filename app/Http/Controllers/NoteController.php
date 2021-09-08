@@ -2,85 +2,72 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\NoteResource;
 use App\Models\Note;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class NoteController extends Controller
 {
     /**
      * Display a listing of the notes.
      *
-     * @return Collection
+     * @return AnonymousResourceCollection
      */
     public function index()
     {
-        return Note::all();
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return NoteResource::collection(Note::latest()->get());
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return NoteResource
      */
     public function store(Request $request)
     {
-        //
-    }
+        $validated = Validator::make($request->all(), [
+            'title' => 'required|max:255',
+            'content' => 'required',
+        ])->validate();
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Note  $note
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Note $note)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Note  $note
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Note $note)
-    {
-        //
+        return new NoteResource(Note::create($validated));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Note  $note
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Note $note
+     * @return NoteResource|Response
      */
     public function update(Request $request, Note $note)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|max:255',
+            'content' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response(
+                ['errors' => $validator->getMessageBag()->all()], 201);
+        }
+
+        $note->update($validator->validated());
+
+        return new NoteResource($note);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Note  $note
-     * @return \Illuminate\Http\Response
+     * @param Note $note
      */
     public function destroy(Note $note)
     {
-        //
+        $note->delete();
     }
 }

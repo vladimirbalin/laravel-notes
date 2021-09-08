@@ -1,9 +1,12 @@
 <template>
     <div class="tc-notes-wrapper">
+        <button @click="addNote">Add note</button>
         <div class="tc-notes">
             <note v-for="(note, index) in notes"
                   :key="index"
-                  :note="note"/>
+                  :note="note"
+                  @updateNote="updateNote"
+                  @removeNote="removeNote"/>
         </div>
     </div>
 
@@ -28,6 +31,56 @@ export default {
             .catch(err => {
                 console.log(err)
             })
+    },
+    methods: {
+        async updateNote(note) {
+            const url = '/api/notes/' + note.id;
+
+            await axios.put(url, note)
+                .then(res => {
+                    const indexOf = this.notes.findIndex(el => el.id === note.id);
+                    let newNote = this.notes[indexOf];
+
+                    if (res.status === 201) {
+                        newNote.errors = res.data.errors;
+                    } else {
+                        newNote = res.data;
+                        newNote.errors = [];
+                    }
+                    const begin = this.notes.slice(0, indexOf);
+                    const end = this.notes.slice(indexOf + 1);
+
+                    this.notes = [...begin, newNote, ...end];
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        },
+        async addNote() {
+            const newNote = {title: 'Please enter the title...', content: 'Please enter the content', errors: []};
+            const url = '/api/notes';
+            await axios.post(url, newNote)
+                .then(res => {
+                    console.log(res)
+                    this.notes = [newNote, ...this.notes];
+                })
+                .catch(err => {
+                })
+
+
+        },
+        async removeNote(note) {
+            const url = '/api/notes/' + note.id;
+
+            await axios.delete(url)
+                .then(res => {
+                    const indexOf = this.notes.findIndex(el => el.id === note.id);
+                    const begin = this.notes.slice(0, indexOf);
+                    const end = this.notes.slice(indexOf + 1);
+                    this.notes = [...begin, ...end];
+                }).catch(err => {
+                })
+        }
     }
 }
 </script>

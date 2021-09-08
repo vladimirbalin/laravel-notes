@@ -5,10 +5,17 @@
                     <i class="fas fa-times">X</i>
                 </span>
         </div>
-        <div class="tc-note-title" contenteditable="">
+        <div class="tc-note-title" contenteditable="" @blur="titleChanged">
             {{ note.title }}
         </div>
-        <div class="tc-note-body" contenteditable="">
+        <div class="tc-note-title" contenteditable="" @blur="titleChanged">
+            {{ note.id }}
+        </div>
+        <div v-if="note.errors" class="errors"
+             v-for="(error, field) in note.errors" :key="field">
+            <p>{{ error }}</p>
+        </div>
+        <div class="tc-note-body" contenteditable="" @blur="contentChanged">
             {{ note.content }}
         </div>
     </div>
@@ -25,12 +32,31 @@ export default {
     },
     methods: {
         deleteNote() {
+            this.$emit('removeNote', this.note)
         },
+        titleChanged(event) {
+            this.note.title = event.target.innerText
+            this.$emit('updateNote', this.note)
+        },
+        contentChanged(event) {
+            this.note.content = event.target.innerText
+            this.$emit('updateNote', this.note)
+        }
+    },
+    mounted() {
     }
 }
 </script>
 
 <style lang="scss" scoped>
+.errors {
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    color: #fff;
+    background-color: #ff6969;
+    font-size: 12px;
+}
+
 .tc-note {
     background-color: #f0c806;
     border-radius: 8px;
@@ -81,6 +107,7 @@ export default {
     .tc-note-body {
         font-size: 16px;
         padding: 10px 16px 16px;
+        height: 100%;
     }
 
     &:hover {

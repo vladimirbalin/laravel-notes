@@ -15,6 +15,10 @@ class NoteTableSeeder extends Seeder
      */
     public function run()
     {
-        Note::factory(5)->create();
+        Note::factory(5)
+            ->create()
+            ->each(function ($el) {
+                $el->penis = $el->id . " " . $el->title;
+            });
     }
 }

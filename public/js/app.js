@@ -2191,6 +2191,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Note",
   props: {
@@ -2200,8 +2207,19 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    deleteNote: function deleteNote() {}
-  }
+    deleteNote: function deleteNote() {
+      this.$emit('removeNote', this.note);
+    },
+    titleChanged: function titleChanged(event) {
+      this.note.title = event.target.innerText;
+      this.$emit('updateNote', this.note);
+    },
+    contentChanged: function contentChanged(event) {
+      this.note.content = event.target.innerText;
+      this.$emit('updateNote', this.note);
+    }
+  },
+  mounted: function mounted() {}
 });
 
 /***/ }),
@@ -2217,7 +2235,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _Note__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Note */ "./resources/js/components/Note.vue");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Note__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Note */ "./resources/js/components/Note.vue");
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -2241,11 +2267,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "NotesList",
   components: {
-    Note: _Note__WEBPACK_IMPORTED_MODULE_0__["default"]
+    Note: _Note__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   data: function data() {
     return {
@@ -2260,6 +2289,110 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     })["catch"](function (err) {
       console.log(err);
     });
+  },
+  methods: {
+    updateNote: function updateNote(note) {
+      var _this2 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+        var url;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                url = '/api/notes/' + note.id;
+                _context.next = 3;
+                return axios.put(url, note).then(function (res) {
+                  var indexOf = _this2.notes.findIndex(function (el) {
+                    return el.id === note.id;
+                  });
+
+                  var newNote = _this2.notes[indexOf];
+
+                  if (res.status === 201) {
+                    newNote.errors = res.data.errors;
+                  } else {
+                    newNote = res.data;
+                    newNote.errors = [];
+                  }
+
+                  var begin = _this2.notes.slice(0, indexOf);
+
+                  var end = _this2.notes.slice(indexOf + 1);
+
+                  _this2.notes = [].concat(_toConsumableArray(begin), [newNote], _toConsumableArray(end));
+                })["catch"](function (err) {
+                  console.log(err);
+                });
+
+              case 3:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    },
+    addNote: function addNote() {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+        var newNote, url;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                newNote = {
+                  title: 'Please enter the title...',
+                  content: 'Please enter the content',
+                  errors: []
+                };
+                url = '/api/notes';
+                _context2.next = 4;
+                return axios.post(url, newNote).then(function (res) {
+                  console.log(res);
+                  _this3.notes = [newNote].concat(_toConsumableArray(_this3.notes));
+                })["catch"](function (err) {});
+
+              case 4:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    },
+    removeNote: function removeNote(note) {
+      var _this4 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
+        var url;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                url = '/api/notes/' + note.id;
+                _context3.next = 3;
+                return axios["delete"](url).then(function (res) {
+                  var indexOf = _this4.notes.findIndex(function (el) {
+                    return el.id === note.id;
+                  });
+
+                  var begin = _this4.notes.slice(0, indexOf);
+
+                  var end = _this4.notes.slice(indexOf + 1);
+
+                  _this4.notes = [].concat(_toConsumableArray(begin), _toConsumableArray(end));
+                })["catch"](function (err) {});
+
+              case 3:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    }
   }
 });
 
@@ -6953,7 +7086,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".tc-note[data-v-01dddddd] {\n  background-color: #f0c806;\n  border-radius: 8px;\n  width: 280px;\n  margin: 0 10px 20px;\n  box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.2);\n  transition: all 0.5s;\n  cursor: pointer;\n  font-family: \"Caveat\", cursive;\n}\n.tc-note .tc-note-header[data-v-01dddddd] {\n  padding: 10px 16px 0;\n}\n.tc-note .tc-note-header .tc-note-close[data-v-01dddddd] {\n  display: inline-block;\n  width: 24px;\n  height: 24px;\n  border-radius: 50%;\n  line-height: 24px;\n  text-align: center;\n  transition: all 0.3s;\n}\n.tc-note .tc-note-header .tc-note-close[data-v-01dddddd]:hover {\n  background-color: rgba(0, 0, 0, 0.2);\n}\n.tc-note .tc-note-header .tc-note-close[data-v-01dddddd]:focus {\n  box-shadow: inset 2px 3px 0px rgba(0, 0, 0, 0.8);\n}\n.tc-note .tc-note-header .tc-note-close[data-v-01dddddd] {\n  float: right;\n}\n.tc-note .tc-note-title[data-v-01dddddd],\n.tc-note .tc-note-body[data-v-01dddddd] {\n  outline: 0;\n}\n.tc-note .tc-note-title[data-v-01dddddd] {\n  font-size: 18px;\n  padding: 10px 16px;\n  font-weight: bold;\n}\n.tc-note .tc-note-body[data-v-01dddddd] {\n  font-size: 16px;\n  padding: 10px 16px 16px;\n}\n.tc-note[data-v-01dddddd]:hover {\n  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".errors[data-v-01dddddd] {\n  margin-bottom: 15px;\n  padding: 10px 15px;\n  color: #fff;\n  background-color: #ff6969;\n  font-size: 12px;\n}\n.tc-note[data-v-01dddddd] {\n  background-color: #f0c806;\n  border-radius: 8px;\n  width: 280px;\n  margin: 0 10px 20px;\n  box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.2);\n  transition: all 0.5s;\n  cursor: pointer;\n  font-family: \"Caveat\", cursive;\n}\n.tc-note .tc-note-header[data-v-01dddddd] {\n  padding: 10px 16px 0;\n}\n.tc-note .tc-note-header .tc-note-close[data-v-01dddddd] {\n  display: inline-block;\n  width: 24px;\n  height: 24px;\n  border-radius: 50%;\n  line-height: 24px;\n  text-align: center;\n  transition: all 0.3s;\n}\n.tc-note .tc-note-header .tc-note-close[data-v-01dddddd]:hover {\n  background-color: rgba(0, 0, 0, 0.2);\n}\n.tc-note .tc-note-header .tc-note-close[data-v-01dddddd]:focus {\n  box-shadow: inset 2px 3px 0px rgba(0, 0, 0, 0.8);\n}\n.tc-note .tc-note-header .tc-note-close[data-v-01dddddd] {\n  float: right;\n}\n.tc-note .tc-note-title[data-v-01dddddd],\n.tc-note .tc-note-body[data-v-01dddddd] {\n  outline: 0;\n}\n.tc-note .tc-note-title[data-v-01dddddd] {\n  font-size: 18px;\n  padding: 10px 16px;\n  font-weight: bold;\n}\n.tc-note .tc-note-body[data-v-01dddddd] {\n  font-size: 16px;\n  padding: 10px 16px 16px;\n  height: 100%;\n}\n.tc-note[data-v-01dddddd]:hover {\n  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -39819,25 +39952,58 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "tc-note" }, [
-    _c("div", { staticClass: "tc-note-header" }, [
+  return _c(
+    "div",
+    { staticClass: "tc-note" },
+    [
+      _c("div", { staticClass: "tc-note-header" }, [
+        _c(
+          "span",
+          { staticClass: "tc-note-close", on: { click: _vm.deleteNote } },
+          [_c("i", { staticClass: "fas fa-times" }, [_vm._v("X")])]
+        )
+      ]),
+      _vm._v(" "),
       _c(
-        "span",
-        { staticClass: "tc-note-close", on: { click: _vm.deleteNote } },
-        [_c("i", { staticClass: "fas fa-times" }, [_vm._v("X")])]
+        "div",
+        {
+          staticClass: "tc-note-title",
+          attrs: { contenteditable: "" },
+          on: { blur: _vm.titleChanged }
+        },
+        [_vm._v("\n        " + _vm._s(_vm.note.title) + "\n    ")]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "tc-note-title",
+          attrs: { contenteditable: "" },
+          on: { blur: _vm.titleChanged }
+        },
+        [_vm._v("\n        " + _vm._s(_vm.note.id) + "\n    ")]
+      ),
+      _vm._v(" "),
+      _vm._l(_vm.note.errors, function(error, field) {
+        return _vm.note.errors
+          ? _c("div", { key: field, staticClass: "errors" }, [
+              _c("p", [_vm._v(_vm._s(error))])
+            ])
+          : _vm._e()
+      }),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "tc-note-body",
+          attrs: { contenteditable: "" },
+          on: { blur: _vm.contentChanged }
+        },
+        [_vm._v("\n        " + _vm._s(_vm.note.content) + "\n    ")]
       )
-    ]),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "tc-note-title", attrs: { contenteditable: "" } },
-      [_vm._v("\n        " + _vm._s(_vm.note.title) + "\n    ")]
-    ),
-    _vm._v(" "),
-    _c("div", { staticClass: "tc-note-body", attrs: { contenteditable: "" } }, [
-      _vm._v("\n        " + _vm._s(_vm.note.content) + "\n    ")
-    ])
-  ])
+    ],
+    2
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -39863,11 +40029,17 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "tc-notes-wrapper" }, [
+    _c("button", { on: { click: _vm.addNote } }, [_vm._v("Add note")]),
+    _vm._v(" "),
     _c(
       "div",
       { staticClass: "tc-notes" },
       _vm._l(_vm.notes, function(note, index) {
-        return _c("note", { key: index, attrs: { note: note } })
+        return _c("note", {
+          key: index,
+          attrs: { note: note },
+          on: { updateNote: _vm.updateNote, removeNote: _vm.removeNote }
+        })
       }),
       1
     )
