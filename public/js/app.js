@@ -2238,12 +2238,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _Note__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Note */ "./resources/js/components/Note.vue");
-
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -2255,6 +2249,12 @@ function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symb
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 //
 //
@@ -2284,113 +2284,151 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   mounted: function mounted() {
     var _this = this;
 
-    axios.get('/api/notes').then(function (res) {
-      _this.notes = _toConsumableArray(res.data);
-    })["catch"](function (err) {
-      console.log(err);
-    });
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+      var _yield$axios$get, data;
+
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return axios.get('/api/notes');
+
+            case 2:
+              _yield$axios$get = _context.sent;
+              data = _yield$axios$get.data;
+              _this.notes = data.sort(function (a, b) {
+                if (a.created_at > b.created_at) {
+                  return -1;
+                } else {
+                  return 1;
+                }
+              });
+
+            case 5:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }))();
   },
   methods: {
     updateNote: function updateNote(note) {
       var _this2 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
-        var url;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+        var indexOf, updatedNote, url, _yield$axios$put, data, begin, end;
+
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
-                url = '/api/notes/' + note.id;
-                _context.next = 3;
-                return axios.put(url, note).then(function (res) {
-                  var indexOf = _this2.notes.findIndex(function (el) {
-                    return el.id === note.id;
-                  });
-
-                  var newNote = _this2.notes[indexOf];
-
-                  if (res.status === 201) {
-                    newNote.errors = res.data.errors;
-                  } else {
-                    newNote = res.data;
-                    newNote.errors = [];
-                  }
-
-                  var begin = _this2.notes.slice(0, indexOf);
-
-                  var end = _this2.notes.slice(indexOf + 1);
-
-                  _this2.notes = [].concat(_toConsumableArray(begin), [newNote], _toConsumableArray(end));
-                })["catch"](function (err) {
-                  console.log(err);
+                indexOf = _this2.notes.findIndex(function (el) {
+                  return el.id === note.id;
                 });
+                updatedNote = _this2.notes[indexOf];
+                _context2.prev = 2;
+                url = '/api/notes/' + note.id;
+                _context2.next = 6;
+                return axios.put(url, note);
 
-              case 3:
+              case 6:
+                _yield$axios$put = _context2.sent;
+                data = _yield$axios$put.data;
+                updatedNote = data;
+                updatedNote.errors = [];
+                _context2.next = 15;
+                break;
+
+              case 12:
+                _context2.prev = 12;
+                _context2.t0 = _context2["catch"](2);
+                updatedNote.errors = _context2.t0.response.data.errors;
+
+              case 15:
+                begin = _this2.notes.slice(0, indexOf);
+                end = _this2.notes.slice(indexOf + 1);
+                _this2.notes = [].concat(_toConsumableArray(begin), [updatedNote], _toConsumableArray(end));
+
+              case 18:
               case "end":
-                return _context.stop();
+                return _context2.stop();
             }
           }
-        }, _callee);
+        }, _callee2, null, [[2, 12]]);
       }))();
     },
     addNote: function addNote() {
       var _this3 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
-        var newNote, url;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                newNote = {
-                  title: 'Please enter the title...',
-                  content: 'Please enter the content',
-                  errors: []
-                };
-                url = '/api/notes';
-                _context2.next = 4;
-                return axios.post(url, newNote).then(function (res) {
-                  console.log(res);
-                  _this3.notes = [newNote].concat(_toConsumableArray(_this3.notes));
-                })["catch"](function (err) {});
-
-              case 4:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2);
-      }))();
-    },
-    removeNote: function removeNote(note) {
-      var _this4 = this;
-
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
-        var url;
+        var newNote, url, _yield$axios$post, data, status;
+
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                url = '/api/notes/' + note.id;
-                _context3.next = 3;
-                return axios["delete"](url).then(function (res) {
-                  var indexOf = _this4.notes.findIndex(function (el) {
-                    return el.id === note.id;
-                  });
+                newNote = {
+                  title: 'Title',
+                  content: 'Content',
+                  errors: []
+                };
+                url = '/api/notes';
+                _context3.next = 4;
+                return axios.post(url, newNote);
 
-                  var begin = _this4.notes.slice(0, indexOf);
+              case 4:
+                _yield$axios$post = _context3.sent;
+                data = _yield$axios$post.data;
+                status = _yield$axios$post.status;
+                _this3.notes = [data].concat(_toConsumableArray(_this3.notes));
 
-                  var end = _this4.notes.slice(indexOf + 1);
-
-                  _this4.notes = [].concat(_toConsumableArray(begin), _toConsumableArray(end));
-                })["catch"](function (err) {});
-
-              case 3:
+              case 8:
               case "end":
                 return _context3.stop();
             }
           }
         }, _callee3);
+      }))();
+    },
+    removeNote: function removeNote(note) {
+      var _this4 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4() {
+        var url, _yield$axios$delete, status, indexOf, begin, end;
+
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                url = '/api/notes/' + note.id;
+                _context4.next = 3;
+                return axios["delete"](url);
+
+              case 3:
+                _yield$axios$delete = _context4.sent;
+                status = _yield$axios$delete.status;
+
+                if (status === 202) {
+                  indexOf = _this4.notes.findIndex(function (el) {
+                    return el.id === note.id;
+                  });
+                  begin = _this4.notes.slice(0, indexOf);
+                  end = _this4.notes.slice(indexOf + 1);
+                  _this4.notes = [].concat(_toConsumableArray(begin), _toConsumableArray(end));
+                }
+
+                if (status === 404) {
+                  alert('noth happened');
+                }
+
+              case 7:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
       }))();
     }
   }
@@ -7086,7 +7124,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".errors[data-v-01dddddd] {\n  margin-bottom: 15px;\n  padding: 10px 15px;\n  color: #fff;\n  background-color: #ff6969;\n  font-size: 12px;\n}\n.tc-note[data-v-01dddddd] {\n  background-color: #f0c806;\n  border-radius: 8px;\n  width: 280px;\n  margin: 0 10px 20px;\n  box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.2);\n  transition: all 0.5s;\n  cursor: pointer;\n  font-family: \"Caveat\", cursive;\n}\n.tc-note .tc-note-header[data-v-01dddddd] {\n  padding: 10px 16px 0;\n}\n.tc-note .tc-note-header .tc-note-close[data-v-01dddddd] {\n  display: inline-block;\n  width: 24px;\n  height: 24px;\n  border-radius: 50%;\n  line-height: 24px;\n  text-align: center;\n  transition: all 0.3s;\n}\n.tc-note .tc-note-header .tc-note-close[data-v-01dddddd]:hover {\n  background-color: rgba(0, 0, 0, 0.2);\n}\n.tc-note .tc-note-header .tc-note-close[data-v-01dddddd]:focus {\n  box-shadow: inset 2px 3px 0px rgba(0, 0, 0, 0.8);\n}\n.tc-note .tc-note-header .tc-note-close[data-v-01dddddd] {\n  float: right;\n}\n.tc-note .tc-note-title[data-v-01dddddd],\n.tc-note .tc-note-body[data-v-01dddddd] {\n  outline: 0;\n}\n.tc-note .tc-note-title[data-v-01dddddd] {\n  font-size: 18px;\n  padding: 10px 16px;\n  font-weight: bold;\n}\n.tc-note .tc-note-body[data-v-01dddddd] {\n  font-size: 16px;\n  padding: 10px 16px 16px;\n  height: 100%;\n}\n.tc-note[data-v-01dddddd]:hover {\n  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".errors[data-v-01dddddd] {\n  margin-bottom: 5px;\n  padding: 5px 5px;\n  color: #fff;\n  background-color: #ff6969;\n  font-size: 12px;\n}\n.tc-note[data-v-01dddddd] {\n  background-color: #f0c806;\n  border-radius: 8px;\n  width: 280px;\n  margin: 0 10px 20px;\n  box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.2);\n  transition: all 0.5s;\n  cursor: pointer;\n  font-family: \"Caveat\", cursive;\n}\n.tc-note .tc-note-header[data-v-01dddddd] {\n  padding: 10px 16px 0;\n}\n.tc-note .tc-note-header .tc-note-close[data-v-01dddddd] {\n  display: inline-block;\n  width: 24px;\n  height: 24px;\n  border-radius: 50%;\n  line-height: 24px;\n  text-align: center;\n  transition: all 0.3s;\n}\n.tc-note .tc-note-header .tc-note-close[data-v-01dddddd]:hover {\n  background-color: rgba(0, 0, 0, 0.2);\n}\n.tc-note .tc-note-header .tc-note-close[data-v-01dddddd]:focus {\n  box-shadow: inset 2px 3px 0px rgba(0, 0, 0, 0.8);\n}\n.tc-note .tc-note-header .tc-note-close[data-v-01dddddd] {\n  float: right;\n}\n.tc-note .tc-note-title[data-v-01dddddd],\n.tc-note .tc-note-body[data-v-01dddddd] {\n  outline: 0;\n}\n.tc-note .tc-note-title[data-v-01dddddd] {\n  font-size: 18px;\n  padding: 10px 16px;\n  font-weight: bold;\n}\n.tc-note .tc-note-body[data-v-01dddddd] {\n  font-size: 16px;\n  padding: 10px 16px 16px;\n  height: 100%;\n}\n.tc-note[data-v-01dddddd]:hover {\n  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -39976,17 +40014,14 @@ var render = function() {
       _vm._v(" "),
       _c(
         "div",
-        {
-          staticClass: "tc-note-title",
-          attrs: { contenteditable: "" },
-          on: { blur: _vm.titleChanged }
-        },
+        { staticClass: "tc-note-title", attrs: { contenteditable: "" } },
         [_vm._v("\n        " + _vm._s(_vm.note.id) + "\n    ")]
       ),
       _vm._v(" "),
       _vm._l(_vm.note.errors, function(error, field) {
         return _vm.note.errors
           ? _c("div", { key: field, staticClass: "errors" }, [
+              _c("span", [_vm._v("Not saved: ")]),
               _c("p", [_vm._v(_vm._s(error))])
             ])
           : _vm._e()

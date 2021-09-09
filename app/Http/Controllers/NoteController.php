@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\NoteResource;
 use App\Models\Note;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
 class NoteController extends Controller
@@ -18,23 +18,30 @@ class NoteController extends Controller
      */
     public function index()
     {
-        return NoteResource::collection(Note::latest()->get());
+        return NoteResource::collection(Note::all());
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return NoteResource
+     * @return NoteResource|JsonResponse
      */
     public function store(Request $request)
     {
-        $validated = Validator::make($request->all(), [
-            'title' => 'required|max:255',
-            'content' => 'required',
-        ])->validate();
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|min:3|max:255',
+            'content' => 'required|min:5',
+        ]);
 
-        return new NoteResource(Note::create($validated));
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Note was not created',
+                'errors' => $validator->getMessageBag()->all()
+            ], 422);
+        }
+
+        return new NoteResource(Note::create($validator->validated()));
     }
 
     /**
@@ -42,20 +49,24 @@ class NoteController extends Controller
      *
      * @param Request $request
      * @param Note $note
-     * @return NoteResource|Response
+     * @return NoteResource|JsonResponse
      */
     public function update(Request $request, Note $note)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|max:255',
-            'content' => 'required',
+            'title' => 'required|min:3|max:255',
+            'content' => 'required|min:5',
         ]);
 
         if ($validator->fails()) {
-            return response(
-                ['errors' => $validator->getMessageBag()->all()], 201);
+            return response()->json(
+                [
+                    'message' => 'Note was not updated',
+                    'errors' => $validator->getMessageBag()->all()
+                ],
+                422
+            );
         }
-
         $note->update($validator->validated());
 
         return new NoteResource($note);
@@ -68,6 +79,10 @@ class NoteController extends Controller
      */
     public function destroy(Note $note)
     {
-        $note->delete();
+        if ($note->delete()) {
+            return response()->json(['message' => 'Note was successfully removed'], 202);
+        } else {
+            return response()->json(['message' => 'Note was not removed'], 404);
+        }
     }
 }

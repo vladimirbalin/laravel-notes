@@ -8,12 +8,12 @@
         <div class="tc-note-title" contenteditable="" @blur="titleChanged">
             {{ note.title }}
         </div>
-        <div class="tc-note-title" contenteditable="" @blur="titleChanged">
+        <div class="tc-note-title" contenteditable="">
             {{ note.id }}
         </div>
         <div v-if="note.errors" class="errors"
              v-for="(error, field) in note.errors" :key="field">
-            <p>{{ error }}</p>
+            <span>Not saved: </span><p>{{ error }}</p>
         </div>
         <div class="tc-note-body" contenteditable="" @blur="contentChanged">
             {{ note.content }}
@@ -50,8 +50,8 @@ export default {
 
 <style lang="scss" scoped>
 .errors {
-    margin-bottom: 15px;
-    padding: 10px 15px;
+    margin-bottom: 5px;
+    padding: 5px 5px;
     color: #fff;
     background-color: #ff6969;
     font-size: 12px;

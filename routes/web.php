@@ -18,8 +18,3 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::apiResource('api/notes', NoteController::class, [''])
-    ->only(['index', 'store', 'update', 'destroy']);
-
-Auth::routes();

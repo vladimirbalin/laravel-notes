@@ -12,7 +12,7 @@ class NoteResource extends JsonResource
      * Transform the resource into an array.
      *
      * @param Request $request
-     * @return array|Arrayable|\JsonSerializable
+     * @return array
      */
     public function toArray($request)
     {
@@ -20,6 +20,7 @@ class NoteResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'content' => $this->content,
+            'created_at' => $this->created_at,
             'errors' => []
         ];
     }

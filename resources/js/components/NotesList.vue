@@ -23,63 +23,54 @@ export default {
             notes: []
         }
     },
-    mounted() {
-        axios.get('/api/notes')
-            .then(res => {
-                this.notes = [...res.data]
-            })
-            .catch(err => {
-                console.log(err)
-            })
+    async mounted() {
+        const {data} = await axios.get('/api/notes')
+        this.notes = data.sort((a, b) => {
+            if (a.created_at > b.created_at) {
+                return -1;
+            } else {
+                return 1;
+            }
+        });
     },
     methods: {
         async updateNote(note) {
-            const url = '/api/notes/' + note.id;
+            const indexOf = this.notes.findIndex(el => el.id === note.id);
+            let updatedNote = this.notes[indexOf];
 
-            await axios.put(url, note)
-                .then(res => {
-                    const indexOf = this.notes.findIndex(el => el.id === note.id);
-                    let newNote = this.notes[indexOf];
+            try {
+                const url = '/api/notes/' + note.id;
+                const {data} = await axios.put(url, note);
+                updatedNote = data;
+                updatedNote.errors = [];
+            } catch (e) {
+                updatedNote.errors = e.response.data.errors
+            }
 
-                    if (res.status === 201) {
-                        newNote.errors = res.data.errors;
-                    } else {
-                        newNote = res.data;
-                        newNote.errors = [];
-                    }
-                    const begin = this.notes.slice(0, indexOf);
-                    const end = this.notes.slice(indexOf + 1);
-
-                    this.notes = [...begin, newNote, ...end];
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+            const begin = this.notes.slice(0, indexOf);
+            const end = this.notes.slice(indexOf + 1);
+            this.notes = [...begin, updatedNote, ...end];
         },
         async addNote() {
-            const newNote = {title: 'Please enter the title...', content: 'Please enter the content', errors: []};
+            const newNote = {title: 'Title', content: 'Content', errors: []};
             const url = '/api/notes';
-            await axios.post(url, newNote)
-                .then(res => {
-                    console.log(res)
-                    this.notes = [newNote, ...this.notes];
-                })
-                .catch(err => {
-                })
+            const {data, status} = await axios.post(url, newNote);
 
-
+            this.notes = [data, ...this.notes];
         },
         async removeNote(note) {
             const url = '/api/notes/' + note.id;
+            const {status} = await axios.delete(url);
 
-            await axios.delete(url)
-                .then(res => {
-                    const indexOf = this.notes.findIndex(el => el.id === note.id);
-                    const begin = this.notes.slice(0, indexOf);
-                    const end = this.notes.slice(indexOf + 1);
-                    this.notes = [...begin, ...end];
-                }).catch(err => {
-                })
+            if (status === 202) {
+                const indexOf = this.notes.findIndex(el => el.id === note.id);
+                const begin = this.notes.slice(0, indexOf);
+                const end = this.notes.slice(indexOf + 1);
+                this.notes = [...begin, ...end];
+            }
+            if (status === 404) {
+                alert('noth happened');
+            }
         }
     }
 }
