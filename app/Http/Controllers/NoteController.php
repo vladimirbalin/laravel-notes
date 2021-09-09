@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class NoteController extends Controller
 {
@@ -41,31 +42,35 @@ class NoteController extends Controller
             ], 422);
         }
 
-        return new NoteResource(Note::create($validator->validated()));
+        return new NoteResource(
+            Note::create($validator->validated())
+        );
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param Note $note
+     * @param $id
      * @return NoteResource|JsonResponse
+     * @throws ValidationException
      */
-    public function update(Request $request, Note $note)
+    public function update(Request $request, $id)
     {
+        $note = Note::find($id);
+        if (!$note) {
+            return response()->json(['message' => 'Note was not found'], 404);
+        }
+
         $validator = Validator::make($request->all(), [
             'title' => 'required|min:3|max:255',
             'content' => 'required|min:5',
         ]);
-
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    'message' => 'Note was not updated',
-                    'errors' => $validator->getMessageBag()->all()
-                ],
-                422
-            );
+            return response()->json([
+                'message' => 'Note was not updated',
+                'errors' => $validator->getMessageBag()->all()
+            ], 422);
         }
         $note->update($validator->validated());
 
@@ -75,11 +80,14 @@ class NoteController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Note $note
+     * @param int $id
+     * @return JsonResponse
      */
-    public function destroy(Note $note)
+    public function destroy($id)
     {
-        if ($note->delete()) {
+        $note = Note::find($id);
+
+        if ($note && $note->delete()) {
             return response()->json(['message' => 'Note was successfully removed'], 202);
         } else {
             return response()->json(['message' => 'Note was not removed'], 404);
