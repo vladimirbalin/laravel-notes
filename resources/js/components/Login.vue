@@ -33,6 +33,9 @@ export default {
     },
     methods: {
         login() {
+
+            localStorage.setItem('api-token', data.token);
+
         }
     }
 }

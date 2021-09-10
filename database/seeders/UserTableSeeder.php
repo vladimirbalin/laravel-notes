@@ -25,6 +25,6 @@ class UserTableSeeder extends Seeder
             'password' => Hash::make('12345678'),
             'remember_token' => Str::random(10)
         ];
-        User::create($user);
+        User::create($user)->createToken('auth-token');
     }
 }

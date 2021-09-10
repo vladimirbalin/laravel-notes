@@ -14,6 +14,7 @@
 
 <script>
 import Note from "./Note";
+import httpService from "../services/http.service";
 
 export default {
     name: "NotesList",
@@ -24,7 +25,7 @@ export default {
         }
     },
     async mounted() {
-        const {data} = await axios.get('/api/notes')
+        const {data} = await httpService('notes');
         this.notes = data.sort((a, b) => {
             if (a.created_at > b.created_at) {
                 return -1;
@@ -39,8 +40,8 @@ export default {
             let updatedNote = this.notes[indexOf];
 
             try {
-                const url = '/api/notes/' + note.id;
-                const {data} = await axios.put(url, note);
+                const url = 'notes/' + note.id;
+                const {data} = await httpService.put(url, note);
                 updatedNote = data;
                 updatedNote.errors = [];
             } catch (e) {
@@ -53,14 +54,14 @@ export default {
         },
         async addNote() {
             const newNote = {title: 'Title', content: 'Content', errors: []};
-            const url = '/api/notes';
-            const {data, status} = await axios.post(url, newNote);
+            const url = 'notes';
+            const {data, status} = await httpService.post(url, newNote);
 
             this.notes = [data, ...this.notes];
         },
         async removeNote(note) {
-            const url = '/api/notes/' + note.id;
-            const {status} = await axios.delete(url);
+            const url = 'notes/' + note.id;
+            const {status} = await httpService.delete(url);
 
             if (status === 202) {
                 const indexOf = this.notes.findIndex(el => el.id === note.id);

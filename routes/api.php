@@ -19,5 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('register', [\App\Http\Controllers\Auth\LoginController::class, 'register']);
 Route::apiResource('notes', NoteController::class)
     ->only(['index', 'store', 'update', 'destroy']);
+//    ->middleware('auth:sanctum');
