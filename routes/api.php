@@ -20,6 +20,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('register', [\App\Http\Controllers\Auth\LoginController::class, 'register']);
+Route::post('login', [\App\Http\Controllers\Auth\LoginController::class, 'login']);
+Route::delete('logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout']);
+
 Route::apiResource('notes', NoteController::class)
-    ->only(['index', 'store', 'update', 'destroy']);
-//    ->middleware('auth:sanctum');
+    ->only(['index', 'store', 'update', 'destroy'])
+    ->middleware('auth:sanctum');
