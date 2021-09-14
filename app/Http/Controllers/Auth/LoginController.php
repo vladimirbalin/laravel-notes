@@ -40,7 +40,6 @@ class LoginController extends Controller
             'username' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|confirmed',
-            'password_confirmation' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -63,13 +62,8 @@ class LoginController extends Controller
         ], 200);
     }
 
-    public function logout()
+    public function user(Request $request)
     {
-        Auth::logout();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'You were successfully logout',
-        ], 200);
+        return response()->json($request->user());
     }
 }
