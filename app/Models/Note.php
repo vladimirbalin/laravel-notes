@@ -11,4 +11,17 @@ class Note extends Model
 
     protected $fillable = ['title', 'content'];
 
+    public function user()
+    {
+        return $this->hasOne(User::class);
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($instance) {
+            $instance->created_by = request()->user()->id;
+        });
+    }
 }

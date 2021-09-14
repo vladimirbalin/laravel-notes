@@ -22,7 +22,7 @@ class UserTableSeeder extends Seeder
             'name' => 'test',
             'email' => 'test@test.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('12345678'),
+            'password' => Hash::make('test'),
             'remember_token' => Str::random(10)
         ];
         User::create($user)->createToken('auth-token');

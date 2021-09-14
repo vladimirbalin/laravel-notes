@@ -17,9 +17,10 @@ class NoteController extends Controller
      *
      * @return AnonymousResourceCollection
      */
-    public function index()
+    public function index(Request $request)
     {
-        return NoteResource::collection(Note::all());
+        $notesForExactUser = Note::where(['created_by' => $request->user()->id])->get();
+        return NoteResource::collection($notesForExactUser);
     }
 
     /**
@@ -42,8 +43,9 @@ class NoteController extends Controller
             ], 422);
         }
 
+        $note = $validator->validated();
         return new NoteResource(
-            Note::create($validator->validated())
+            Note::create($note)
         );
     }
 
@@ -80,14 +82,12 @@ class NoteController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
+     * @param Note $note
      * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy(Note $note)
     {
-        $note = Note::find($id);
-
-        if ($note && $note->delete()) {
+        if ($note->delete()) {
             return response()->json(['message' => 'Note was successfully removed'], 202);
         } else {
             return response()->json(['message' => 'Note was not removed'], 404);

@@ -25,7 +25,8 @@ class NoteFactory extends Factory
         return [
             'title' => $this->faker->sentence(10),
             'content' => $this->faker->sentence(100),
-            'created_at' => $this->faker->dateTimeInInterval('-1 year', '+1 year')
+            'created_at' => $this->faker->dateTimeInInterval('-1 year', '+1 year'),
+            'created_by' => $this->faker->randomDigitNot(0)
         ];
     }
 }

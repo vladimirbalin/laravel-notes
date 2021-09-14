@@ -17,8 +17,16 @@ class CreateNotesTable extends Migration
             $table->id();
             $table->string('title');
             $table->text('content');
+            $table->bigInteger('created_by')->unsigned();
             $table->timestamps();
+
+            $table->foreign('created_by')
+                ->references('id')
+                ->on('users')
+                ->cascadeOnDelete();
+
         });
+
     }
 
     /**
