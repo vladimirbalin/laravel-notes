@@ -21,7 +21,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('notes', NoteController::class)
         ->only(['index', 'store', 'update', 'destroy']);
 });
-Route::group(['middleware' => 'guest'], function () {
     Route::post('register', [LoginController::class, 'register']);
     Route::post('login', [LoginController::class, 'login']);
-});
