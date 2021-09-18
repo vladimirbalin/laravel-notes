@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Model;
 use App\Models\Note;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

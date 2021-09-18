@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -13,12 +12,9 @@ class LoginController extends Controller
 {
     public function login(Request $request)
     {
-        $credentials = [
-            'name' => $request->username,
-            'password' => $request->password
-        ];
+        $user = User::where(['name' => $request->username])->first();
 
-        if (!Auth::attempt($credentials)) {
+        if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Wrong credentials',
@@ -26,10 +22,10 @@ class LoginController extends Controller
             ], 422);
         }
 
-        $tokenResult = $request->user()->createToken('auth-token');
+        $tokenResult = $user->createToken('auth-token');
         return response()->json([
             'success' => true,
-            'user' => $request->user(),
+            'user' => $user,
             'token' => $tokenResult->plainTextToken
         ], 200);
     }
