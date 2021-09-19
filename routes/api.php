@@ -15,11 +15,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::post('register', [LoginController::class, 'register']);
+Route::post('login', [LoginController::class, 'login']);
+
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('user', [LoginController::class, 'user']);
 
     Route::apiResource('notes', NoteController::class)
         ->only(['index', 'store', 'update', 'destroy']);
+    Route::delete('logout', [LoginController::class, 'logout']);
 });
-    Route::post('register', [LoginController::class, 'register']);
-    Route::post('login', [LoginController::class, 'login']);
+

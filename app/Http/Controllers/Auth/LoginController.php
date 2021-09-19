@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -22,11 +23,10 @@ class LoginController extends Controller
             ], 422);
         }
 
-        $tokenResult = $user->createToken('auth-token');
+        Auth::guard('sanctum')->login($user);
         return response()->json([
             'success' => true,
             'user' => $user,
-            'token' => $tokenResult->plainTextToken
         ], 200);
     }
 
@@ -61,5 +61,10 @@ class LoginController extends Controller
     public function user(Request $request)
     {
         return response()->json($request->user());
+    }
+
+    public function logout()
+    {
+        Auth::guard('sanctum')->logout();
     }
 }
