@@ -9,19 +9,10 @@ class Note extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'content'];
+    protected $fillable = ['title', 'content', 'created_by'];
 
     public function user()
     {
         return $this->hasOne(User::class);
-    }
-
-    public static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($instance) {
-            $instance->created_by = request()->user()->id;
-        });
     }
 }

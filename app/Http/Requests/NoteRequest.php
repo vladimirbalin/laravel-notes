@@ -18,6 +18,7 @@ class NoteRequest extends FormRequest
         return [
             'title' => 'required|min:3|max:255',
             'content' => 'required|min:5',
+            'created_by' => 'exists:users,id'
         ];
     }
 
