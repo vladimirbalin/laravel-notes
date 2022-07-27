@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Note;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class NoteFactory extends Factory
@@ -22,10 +23,10 @@ class NoteFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $this->faker->sentence(10),
-            'content' => $this->faker->sentence(100),
+            'title' => $this->faker->realTextBetween(3, 10),
+            'content' => $this->faker->sentence(5),
             'created_at' => $this->faker->dateTimeInInterval('-1 year', '+1 year'),
-            'created_by' => $this->faker->randomDigitNot(0)
+            'created_by' => User::all()->random()->id
         ];
     }
 }
