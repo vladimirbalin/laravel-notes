@@ -27,7 +27,7 @@ class LoginController extends Controller
         return response()->json([
             'success' => true,
             'user' => $user,
-        ], 200);
+        ]);
     }
 
     public function register(Request $request)
@@ -55,7 +55,7 @@ class LoginController extends Controller
         return response()->json([
             'success' => true,
             'user' => $user,
-        ], 200);
+        ]);
     }
 
     public function user(Request $request)

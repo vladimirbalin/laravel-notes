@@ -14,6 +14,7 @@ class NoteController extends Controller
     /**
      * Display a listing of the notes.
      *
+     * @param Request $request
      * @return AnonymousResourceCollection
      */
     public function index(Request $request)
@@ -23,7 +24,7 @@ class NoteController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created note in storage.
      *
      * @param NoteRequest $request
      * @return NoteResource
@@ -36,7 +37,7 @@ class NoteController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified note in storage.
      *
      * @param NoteRequest $request
      * @param $id
@@ -46,7 +47,7 @@ class NoteController extends Controller
     {
         $note = Note::find($id);
 
-        if (!isset($note)) {
+        if (! isset($note)) {
             return response()->json(['message' => 'Note was not found'], 404);
         }
 
@@ -56,7 +57,7 @@ class NoteController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified note from storage.
      *
      * @param Note $note
      * @return JsonResponse
