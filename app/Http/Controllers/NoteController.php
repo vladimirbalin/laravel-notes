@@ -12,10 +12,27 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 class NoteController extends Controller
 {
     /**
-     * Display a listing of the notes.
-     *
-     * @param Request $request
-     * @return AnonymousResourceCollection
+     * @OA\Get(
+     *     path="/notes",
+     *     tags={"Notes"},
+     *     @OA\MediaType(
+     *          mediaType="application/json",
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Getting all notes of the current authorized user",
+     *         @OA\JsonContent (
+     *              @OA\AdditionalProperties(ref="#/components/schemas/note-resource")
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Not authorized",
+     *     ),
+     *     security={
+     *          {"xsrf":{}, "session-id":{}}
+     *     }
+     * )
      */
     public function index(Request $request)
     {
@@ -24,10 +41,31 @@ class NoteController extends Controller
     }
 
     /**
-     * Store a newly created note in storage.
-     *
-     * @param NoteRequest $request
-     * @return NoteResource
+     * @OA\Post(
+     *     path="/notes",
+     *     tags={"Notes"},
+     *     @OA\RequestBody (
+     *         required=true,
+     *         description="Note object that needs to be added",
+     *         @OA\JsonContent(ref="#/components/schemas/note")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Creating note",
+     *         @OA\JsonContent (ref="#/components/schemas/note-resource"),
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Not authorized",
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation errors",
+     *     ),
+     *     security={
+     *          {"xsrf":{}, "session-id":{}}
+     *     },
+     * )
      */
     public function store(NoteRequest $request)
     {
@@ -37,35 +75,79 @@ class NoteController extends Controller
     }
 
     /**
-     * Update the specified note in storage.
-     *
-     * @param NoteRequest $request
-     * @param $id
-     * @return NoteResource|JsonResponse
+     * @OA\Put(
+     *     path="/notes/{noteId}",
+     *     tags={"Notes"},
+     *     @OA\Parameter(
+     *         name="noteId",
+     *         in="path",
+     *         description="Note id to update",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64",
+     *         ),
+     *     ),
+     *     @OA\RequestBody (
+     *         description="Note object that needs to be updated",
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/note"),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Creating note",
+     *         @OA\JsonContent (ref="#/components/schemas/note-resource"),
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Not authorized",
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation errors",
+     *     ),
+     *     security={
+     *          {"xsrf":{}, "session-id":{}}
+     *     }
+     * )
      */
     public function update(NoteRequest $request, $id)
     {
-        $note = Note::find($id);
-
-        if (! isset($note)) {
-            return response()->json(['message' => 'Note was not found'], 404);
-        }
-
+        $note = Note::findOrFail($id);
         $note->update($request->validated());
 
         return new NoteResource($note);
     }
 
     /**
-     * Remove the specified note from storage.
-     *
-     * @param Note $note
-     * @return JsonResponse
+     * @OA\Delete(
+     *     path="/notes/{noteId}",
+     *     tags={"Notes"},
+     *     @OA\Parameter(
+     *         name="noteId",
+     *         in="path",
+     *         description="Note id to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64",
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Note successfully removed",
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Not authorized",
+     *     ),
+     *     security={
+     *          {"xsrf":{}, "session-id":{}}
+     *     }
+     * )
      */
     public function destroy(Note $note)
     {
-        return $note->delete() ?
-            response()->json(['message' => 'Note was successfully removed'], 202) :
-            response()->json(['message' => 'Note was not removed'], 404);
+        return $note->deleteOrFail();
     }
 }

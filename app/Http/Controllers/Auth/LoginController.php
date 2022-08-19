@@ -11,6 +11,46 @@ use Illuminate\Support\Facades\Validator;
 
 class LoginController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/login",
+     *     tags={"Auth"},
+     *     @OA\RequestBody (
+     *         required=true,
+     *         description="Login credentials",
+     *         @OA\JsonContent(
+     *              @OA\Property (
+     *                  type="string",
+     *                  property="username",
+     *              ),
+     *              @OA\Property(
+     *                  type="string",
+     *                  property="password",
+     *              ),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successfully logged in",
+     *          @OA\JsonContent(
+     *              @OA\Property (property="success", type="string"),
+     *              @OA\Property (property="user", ref="#/components/schemas/user"),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation errors",
+     *         @OA\JsonContent(
+     *              @OA\Property (property="success", type="string"),
+     *              @OA\Property (property="message", type="string"),
+     *              @OA\Property (property="errors", type="object"),
+     *          ),
+     *     ),
+     *     security={
+     *          {"xsrf":{}, "session-id":{}}
+     *     },
+     * )
+     */
     public function login(Request $request)
     {
         $user = User::where(['name' => $request->username])->first();
@@ -30,6 +70,42 @@ class LoginController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/register",
+     *     tags={"Auth"},
+     *     @OA\RequestBody (
+     *         required=true,
+     *         description="Registration credentials",
+     *         @OA\JsonContent(
+     *              @OA\Property (type="string", property="username"),
+     *              @OA\Property (type="string", property="email", format="email"),
+     *              @OA\Property (type="string", property="password"),
+     *              @OA\Property (type="string", property="password_confirmation"),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successfully registered",
+     *          @OA\JsonContent(
+     *              @OA\Property (property="success", type="string"),
+     *              @OA\Property (property="user", ref="#/components/schemas/user"),
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation errors",
+     *         @OA\JsonContent(
+     *              @OA\Property (property="success", type="string"),
+     *              @OA\Property (property="message", type="string"),
+     *              @OA\Property (property="errors", type="object"),
+     *          ),
+     *     ),
+     *     security={
+     *          {"xsrf":{}}
+     *     },
+     * )
+     */
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -57,12 +133,42 @@ class LoginController extends Controller
             'user' => $user,
         ]);
     }
-
+    /**
+     * @OA\Get(
+     *     path="/user",
+     *     tags={"Auth"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Getting current authenticated user",
+     *          @OA\JsonContent(
+     *              @OA\Property (property="success", type="string"),
+     *              @OA\Property (property="user", ref="#/components/schemas/user"),
+     *          ),
+     *     ),
+     *     security={
+     *          {"basicAuth":{}, "xsrf":{}, "session-id":{}}
+     *     },
+     * )
+     */
     public function user(Request $request)
     {
         return response()->json($request->user());
     }
 
+
+    /**
+     * @OA\Delete (
+     *     path="/logout",
+     *     tags={"Auth"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful logout",
+     *     ),
+     *     security={
+     *          {"basicAuth":{}, "xsrf":{}, "session-id":{}}
+     *     },
+     * )
+     */
     public function logout()
     {
         Auth::guard('sanctum')->logout();

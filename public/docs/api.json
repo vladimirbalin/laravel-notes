@@ -1,0 +1,493 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Laravel-notes API",
+        "contact": {
+            "email": "support@example.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://api.notes.local/api"
+        }
+    ],
+    "paths": {
+        "/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "operationId": "a0bad38435a32b5ad173da486ba8f59d",
+                "requestBody": {
+                    "description": "Login credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "username": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully logged in",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "string"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/user"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "xsrf": [],
+                        "session-id": []
+                    }
+                ]
+            }
+        },
+        "/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "operationId": "03ac17c2363f1057231f5934aacd7613",
+                "requestBody": {
+                    "description": "Registration credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "username": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully registered",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "string"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/user"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "xsrf": []
+                    }
+                ]
+            }
+        },
+        "/user": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "operationId": "fcb35ea80ce26aa89c86bdd1fb3334c8",
+                "responses": {
+                    "200": {
+                        "description": "Getting current authenticated user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "string"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/user"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "basicAuth": [],
+                        "xsrf": [],
+                        "session-id": []
+                    }
+                ]
+            }
+        },
+        "/logout": {
+            "delete": {
+                "tags": [
+                    "Auth"
+                ],
+                "operationId": "6d0ba34227a3e92d403524dc46ed39c9",
+                "responses": {
+                    "200": {
+                        "description": "Successful logout"
+                    }
+                },
+                "security": [
+                    {
+                        "basicAuth": [],
+                        "xsrf": [],
+                        "session-id": []
+                    }
+                ]
+            }
+        },
+        "/sanctum/csrf-cookie": {
+            "get": {
+                "responses": {
+                    "204": {
+                        "description": "The CSRF token is returned in a cookie named `XSRF-TOKEN`. You need to include this cookie in subsequent requests."
+                    }
+                }
+            }
+        },
+        "/": {
+            "get": {
+                "operationId": "ac5f32eec336b092a10a014ae5e0d4ed",
+                "responses": {
+                    "200": {
+                        "description": "homepage of an API",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/notes": {
+            "get": {
+                "tags": [
+                    "Notes"
+                ],
+                "operationId": "9393a3bea0b52c3edef159a70977cbbe",
+                "responses": {
+                    "200": {
+                        "description": "Getting all notes of the current authorized user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "additionalProperties": {
+                                        "$ref": "#/components/schemas/note-resource"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized"
+                    }
+                },
+                "security": [
+                    {
+                        "xsrf": [],
+                        "session-id": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Notes"
+                ],
+                "operationId": "09e1e6df7c7704264ca5dff3c1283d86",
+                "requestBody": {
+                    "description": "Note object that needs to be added",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/note"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Creating note",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/note-resource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                },
+                "security": [
+                    {
+                        "xsrf": [],
+                        "session-id": []
+                    }
+                ]
+            }
+        },
+        "/notes/{noteId}": {
+            "put": {
+                "tags": [
+                    "Notes"
+                ],
+                "operationId": "78bd40fe7775264dbfd50e173544354d",
+                "parameters": [
+                    {
+                        "name": "noteId",
+                        "in": "path",
+                        "description": "Note id to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Note object that needs to be updated",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/note"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Creating note",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/note-resource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                },
+                "security": [
+                    {
+                        "xsrf": [],
+                        "session-id": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Notes"
+                ],
+                "operationId": "5213f5712406d3d9d152ac2096d8f9f4",
+                "parameters": [
+                    {
+                        "name": "noteId",
+                        "in": "path",
+                        "description": "Note id to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Note successfully removed"
+                    },
+                    "401": {
+                        "description": "Not authorized"
+                    }
+                },
+                "security": [
+                    {
+                        "xsrf": [],
+                        "session-id": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "note": {
+                "title": "Note model",
+                "required": [
+                    "title",
+                    "content",
+                    "created_by"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "format": "string"
+                    },
+                    "content": {
+                        "type": "string",
+                        "format": "string"
+                    },
+                    "created_by": {
+                        "type": "integer",
+                        "format": "int"
+                    }
+                },
+                "type": "object"
+            },
+            "note-resource": {
+                "title": "Note resource",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "content": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "user": {
+                "title": "User model",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "email_verified_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "xsrf": {
+                "type": "apiKey",
+                "name": "XSRF-TOKEN",
+                "in": "cookie"
+            },
+            "session-id": {
+                "type": "apiKey",
+                "name": "notes_laravel_session",
+                "in": "cookie"
+            }
+        }
+    }
+}

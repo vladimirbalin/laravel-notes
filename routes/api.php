@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/', [\App\Http\Controllers\HomeController::class, 'index']);
+
 Route::post('register', [LoginController::class, 'register']);
 Route::post('login', [LoginController::class, 'login']);
 
@@ -25,4 +27,3 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         ->only(['index', 'store', 'update', 'destroy']);
     Route::delete('logout', [LoginController::class, 'logout']);
 });
-

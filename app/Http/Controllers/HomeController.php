@@ -2,27 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+/**
+ * @OA\Get (
+ *     path="/sanctum/csrf-cookie",
+ *     @OA\Response(
+ *          response="204",
+ *          description="The CSRF token is returned in a cookie named `XSRF-TOKEN`. You need to include this cookie in subsequent requests.",
+ *          @OA\Parameter(
+ *              in="headers",
+ *              name="Set-cookie",
+ *          )
+ *     )
+ * )
+ */
 
 class HomeController extends Controller
 {
     /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @OA\Get(
+     *     path="/",
+     *     @OA\MediaType(
+     *          mediaType="application/json",
+     *     ),
+     *     @OA\Response(response="200",
+     *         description="homepage of an API",
+     *         @OA\MediaType(
+     *              mediaType="application/json",
+     *          )
+     *     )
+     * )
      */
     public function index()
     {
-        return view('home');
+        return response()->json([
+            'name' => 'api'
+        ]);
     }
 }
