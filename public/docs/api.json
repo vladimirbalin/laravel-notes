@@ -9,10 +9,84 @@
     },
     "servers": [
         {
-            "url": "http://api.notes.local/api"
+            "url": "https://notes-api.vladimirbalin.ru/api/"
         }
     ],
     "paths": {
+        "/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "operationId": "03ac17c2363f1057231f5934aacd7613",
+                "requestBody": {
+                    "description": "Registration credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successfully registered",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "$ref": "#/components/schemas/user"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "xsrf": []
+                    }
+                ]
+            }
+        },
         "/login": {
             "post": {
                 "tags": [
@@ -26,7 +100,7 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "username": {
+                                    "name": {
                                         "type": "string"
                                     },
                                     "password": {
@@ -87,82 +161,22 @@
                 ]
             }
         },
-        "/register": {
-            "post": {
+        "/logout": {
+            "delete": {
                 "tags": [
                     "Auth"
                 ],
-                "operationId": "03ac17c2363f1057231f5934aacd7613",
-                "requestBody": {
-                    "description": "Registration credentials",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "username": {
-                                        "type": "string"
-                                    },
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email"
-                                    },
-                                    "password": {
-                                        "type": "string"
-                                    },
-                                    "password_confirmation": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
+                "operationId": "6d0ba34227a3e92d403524dc46ed39c9",
                 "responses": {
                     "200": {
-                        "description": "Successfully registered",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "string"
-                                        },
-                                        "user": {
-                                            "$ref": "#/components/schemas/user"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation errors",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "string"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "errors": {
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Successful logout"
                     }
                 },
                 "security": [
                     {
-                        "xsrf": []
+                        "basicAuth": [],
+                        "xsrf": [],
+                        "session-id": []
                     }
                 ]
             }
@@ -180,9 +194,6 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "success": {
-                                            "type": "string"
-                                        },
                                         "user": {
                                             "$ref": "#/components/schemas/user"
                                         }
@@ -191,26 +202,6 @@
                                 }
                             }
                         }
-                    }
-                },
-                "security": [
-                    {
-                        "basicAuth": [],
-                        "xsrf": [],
-                        "session-id": []
-                    }
-                ]
-            }
-        },
-        "/logout": {
-            "delete": {
-                "tags": [
-                    "Auth"
-                ],
-                "operationId": "6d0ba34227a3e92d403524dc46ed39c9",
-                "responses": {
-                    "200": {
-                        "description": "Successful logout"
                     }
                 },
                 "security": [
