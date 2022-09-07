@@ -41,7 +41,7 @@ class GenerateOpenApiJson extends Command
     public function handle()
     {
         // ./vendor/bin/openapi -o api.json app/Http
-        $command = '.\vendor\bin\openapi';
+        $command = './vendor/bin/openapi';
 
         $process = new Process([
             $command,
