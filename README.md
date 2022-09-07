@@ -34,6 +34,10 @@ DB_PASSWORD=
  ```
 php artisan migrate --seed
  ```
+4. Generate OpenApi docs, available at /docs
+ ```
+php artisan openapi:generate app
+ ```
 
 
 ### Features and instruments used
@@ -45,4 +49,5 @@ php artisan migrate --seed
 ## Tech stack used
 
 - Laravel
+- [OpenApi/Swagger](https://swagger.io/)
 - [PHPFaker](https://github.com/FakerPHP/Faker) for seeds
