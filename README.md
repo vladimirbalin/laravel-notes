@@ -34,10 +34,10 @@ DB_PASSWORD=
  ```
 php artisan migrate --seed
  ```
-4. Generate OpenApi docs, available at /docs
- ```
-php artisan openapi:generate app
- ```
+4. Generate OpenApi json file, required for Swagger documentation by custom command, `php artisan openapi:generate`, 
+located in [app/Console/Commands/GenerateOpenApiJson.php](app/Console/Commands/GenerateOpenApiJson.php), which generates `api.json` in `./public/docs` directory if you run it w/o arguments. 
+- First argument is a path and a name for the generated file (extension must be json) `./public/docs/api.json` by default.
+- Second argument is a directory to scan for OpenApi PHPDocs, `app` by default.
 
 
 ### Features and instruments used

@@ -14,7 +14,7 @@ class GenerateOpenApiJson extends Command
      *
      * @var string
      */
-    protected $signature = 'openapi:generate {dir=app : A directory to scan for OpenApi docs} {name=public/docs/api.json : A generated json file}';
+    protected $signature = 'openapi:generate {name=public/docs/api.json : A generated json file} {dir=app : A directory to scan for OpenApi docs}';
 
     /**
      * The console command description.
@@ -40,7 +40,7 @@ class GenerateOpenApiJson extends Command
      */
     public function handle()
     {
-        // ./vendor/bin/openapi -o api.json app/Http
+        // runs `./vendor/bin/openapi --output api.json app` with arguments
         $command = './vendor/bin/openapi';
 
         $process = new Process([
