@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Controllers;
+namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -9,29 +9,30 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 
-class LoginControllerTests extends TestCase
+class AuthTests extends TestCase
 {
     /** @test */
     public function user_is_logged_in_successfully()
     {
         $user = $this->creatUser();
-
-        $response = $this->json('post', 'api/login', [
+        $payload = [
             'name' => $user->name,
             'password' => 'password'
+        ];
+
+        $response = $this->json('post', 'api/login', $payload);
+
+        $response->assertJsonStructure([
+            'user' => [
+                'id',
+                'created_at',
+                'email',
+                'name',
+                'updated_at'
+            ]
         ]);
-        $response
-            ->assertJsonStructure([
-                'user' => [
-                    'id',
-                    'created_at',
-                    'email',
-                    'name',
-                    'updated_at'
-                ]
-            ]);
-        $this->assertAuthenticated()
-            ->assertAuthenticatedAs($user);
+        $this->assertAuthenticated();
+        $this->assertAuthenticatedAs($user);
     }
 
     /** @test */
@@ -41,12 +42,12 @@ class LoginControllerTests extends TestCase
             'name' => 'wrong_name',
             'password' => 'wrong_password'
         ]);
-        $response
-            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonStructure([
-                'message',
-                'errors' => []
-            ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonStructure([
+            'message',
+            'errors' => []
+        ]);
         $this->assertGuest();
     }
 
@@ -62,18 +63,17 @@ class LoginControllerTests extends TestCase
         ];
 
         $response = $this->json('post', 'api/register', $payload);
-        $response
-            ->assertStatus(Response::HTTP_CREATED)
-            ->assertJsonStructure([
-                'user' => [
-                    'created_at',
-                    'email',
-                    'id',
-                    'name',
-                    'updated_at'
-                ]
-            ]);
 
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonStructure([
+            'user' => [
+                'created_at',
+                'email',
+                'id',
+                'name',
+                'updated_at'
+            ]
+        ]);
         $this->assertDatabaseHas('users', [
             'name' => $payload['name'],
             'email' => $payload['email'],
@@ -87,17 +87,17 @@ class LoginControllerTests extends TestCase
         $this->actingAs($user);
 
         $response = $this->json('get', 'api/user');
-        $response
-            ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure([
-                'user' => [
-                    'id',
-                    'created_at',
-                    'email',
-                    'name',
-                    'updated_at'
-                ]
-            ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure([
+            'user' => [
+                'id',
+                'created_at',
+                'email',
+                'name',
+                'updated_at'
+            ]
+        ]);
     }
 
     /** @test */
@@ -105,30 +105,29 @@ class LoginControllerTests extends TestCase
     {
         $user = $this->creatUser();
         $this->actingAs($user);
-        $this->assertAuthenticatedAs($user);
 
-        $this->json('delete', 'api/logout')
-            ->assertStatus(Response::HTTP_OK);
+        $response = $this->json('delete', 'api/logout');
+
+        $response->assertStatus(Response::HTTP_OK);
         $this->assertGuest();
     }
 
     /** @test */
     public function dont_get_resource_when_not_authenticated()
     {
-        $this->assertGuest();
         $response = $this->json('get', 'api/notes');
+
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
     /** @test */
     public function has_validation_errors_when_providing_empty_fields()
     {
-        $this->assertGuest();
-
         $response = $this->json('post', 'api/login', [
             'name' => '',
             'password' => ''
         ]);
+
         $response->assertJsonValidationErrors(['name', 'password']);
     }
 

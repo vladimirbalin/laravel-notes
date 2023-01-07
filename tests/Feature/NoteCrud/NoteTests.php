@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Controllers;
+namespace NoteCrud;
 
 use App\Models\Note;
 use App\Models\User;
@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 
-class NoteControllerTests extends TestCase
+class NoteTests extends TestCase
 {
     private Authenticatable|Model $user;
 
@@ -28,33 +28,36 @@ class NoteControllerTests extends TestCase
             'content' => 'New content',
             'created_by' => $this->user->id
         ];
-        $this->json('post', 'api/notes', $payload)
-            ->assertStatus(Response::HTTP_CREATED)
-            ->assertJsonStructure([
-                'data' => [
-                    'content',
-                    'created_at',
-                    'id',
-                    'title'
-                ]
-            ]);
+
+        $response = $this->json('post', 'api/notes', $payload);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonStructure([
+            'data' => [
+                'content',
+                'created_at',
+                'id',
+                'title'
+            ]
+        ]);
     }
 
     /** @test */
     public function retrieve_notes_successfully()
     {
-        $this->json('get', 'api/notes')
-            ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure([
-                'data' => [
-                    '*' => [
-                        'content',
-                        'created_at',
-                        'id',
-                        'title'
-                    ]
+        $response = $this->json('get', 'api/notes');
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'content',
+                    'created_at',
+                    'id',
+                    'title'
                 ]
-            ]);
+            ]
+        ]);
     }
 
     /** @test */
@@ -66,16 +69,18 @@ class NoteControllerTests extends TestCase
             'created_by' => $this->user->id,
         ];
         $note = Note::create($payload);
-        $this->json('put', 'api/notes/' . $note->id, $payload)
-            ->assertStatus(Response::HTTP_OK)
-            ->assertJsonStructure([
-                'data' => [
-                    'content',
-                    'created_at',
-                    'id',
-                    'title'
-                ]
-            ]);
+
+        $response = $this->json('put', 'api/notes/' . $note->id, $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure([
+            'data' => [
+                'content',
+                'created_at',
+                'id',
+                'title'
+            ]
+        ]);
     }
 
     /** @test */
@@ -87,8 +92,10 @@ class NoteControllerTests extends TestCase
             'created_by' => $this->user->id,
         ];
         $note = Note::create($payload);
-        $this->json('delete', 'api/notes/' . $note->id, $payload)
-            ->assertStatus(Response::HTTP_OK);
+
+        $response = $this->json('delete', 'api/notes/' . $note->id, $payload);
+
+        $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseMissing('notes', ['id' => $note->id]);
     }
 }

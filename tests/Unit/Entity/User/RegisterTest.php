@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Models;
+namespace Entity\User;
 
 use App\Models\User;
 use Tests\TestCase;
 
-class UserTests extends TestCase
+class RegisterTest extends TestCase
 {
     /** @test */
     public function user_register()
