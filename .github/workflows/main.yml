@@ -1,0 +1,13 @@
+on:
+  push:
+    tags:
+      - '!refs/tags/*'
+    branches:
+      - '*'
+jobs:
+  pull_and_build:
+    runs-on: self-hosted
+    steps:
+      - name: Install requirements
+        run: git pull && composer install
+        working-directory: /var/www/notes-api/
