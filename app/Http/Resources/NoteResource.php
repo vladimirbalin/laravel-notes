@@ -13,13 +13,14 @@ class NoteResource extends JsonResource
      * @param Request $request
      * @return array
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         return [
             'id' => $this->id,
             'title' => $this->title,
             'content' => $this->content,
             'created_at' => $this->created_at,
+            'errors' => []
         ];
     }
 }

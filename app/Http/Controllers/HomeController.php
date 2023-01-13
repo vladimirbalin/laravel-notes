@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Session;
+
 /**
  * @OA\Get (
  *     path="/sanctum/csrf-cookie",
@@ -32,10 +35,10 @@ class HomeController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index(): JsonResponse
     {
         return response()->json([
-            'name' => 'api'
+            'name' => Session::token()
         ]);
     }
 }

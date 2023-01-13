@@ -5,9 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\NoteRequest;
 use App\Http\Resources\NoteResource;
 use App\Models\Note;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class NoteController extends Controller
 {
@@ -34,9 +33,14 @@ class NoteController extends Controller
      *     }
      * )
      */
-    public function index(Request $request)
+    public function index(Request $request): ResourceCollection
     {
-        $notesForCurrentUser = Note::where(['created_by' => $request->user()->id])->get();
+        $notesForCurrentUser = Note
+            ::query()
+            ->where([
+                'created_by' => $request->user()->id
+            ])->get();
+
         return NoteResource::collection($notesForCurrentUser);
     }
 
@@ -67,7 +71,7 @@ class NoteController extends Controller
      *     },
      * )
      */
-    public function store(NoteRequest $request)
+    public function store(NoteRequest $request): NoteResource
     {
         $createdNote = Note::create($request->validated());
 
@@ -111,7 +115,7 @@ class NoteController extends Controller
      *     }
      * )
      */
-    public function update(NoteRequest $request, $id)
+    public function update(NoteRequest $request, $id): NoteResource
     {
         $note = Note::findOrFail($id);
         $note->update($request->validated());
@@ -146,7 +150,7 @@ class NoteController extends Controller
      *     }
      * )
      */
-    public function destroy(Note $note)
+    public function destroy(Note $note): ?bool
     {
         return $note->deleteOrFail();
     }

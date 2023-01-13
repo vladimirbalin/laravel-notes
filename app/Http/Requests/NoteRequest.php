@@ -13,22 +13,12 @@ class NoteRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'title' => 'max:255',
+            'title' => 'max:32',
             'content' => 'max:255',
             'created_by' => 'exists:users,id'
         ];
     }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'success'   => false,
-            'message'   => 'Validation errors',
-            'errors'      => $validator->errors()
-        ], 422));
-    }
-
 }

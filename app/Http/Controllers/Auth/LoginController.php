@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -47,9 +48,10 @@ class LoginController extends Controller
      *     },
      * )
      */
-    public function register(RegisterRequest $request)
+    public function register(RegisterRequest $request): JsonResponse
     {
         $user = User::register(...$request->validated());
+
         return response()->json(
             ['user' => $user],
             Response::HTTP_CREATED
@@ -96,38 +98,28 @@ class LoginController extends Controller
      *     },
      * )
      */
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): JsonResponse
     {
-        $user = User::where(['name' => $request->name])->first();
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        $user = User::query()
+            ->where(['name' => $request->name])
+            ->first();
+
+        if (
+            ! $user ||
+            ! Hash::check($request->password, $user->password)
+        ) {
             return response()->json([
                 'message' => 'Wrong credentials',
                 'errors' => ['Wrong login or password'],
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        Auth::guard('sanctum')->login($user);
+        Auth::guard('sanctum')
+            ->login($user);
+
         return response()->json([
             'user' => $user,
         ]);
-    }
-
-    /**
-     * @OA\Delete (
-     *     path="/logout",
-     *     tags={"Auth"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Successful logout",
-     *     ),
-     *     security={
-     *          {"basicAuth":{}, "xsrf":{}, "session-id":{}}
-     *     },
-     * )
-     */
-    public function logout()
-    {
-        Auth::guard('sanctum')->logout();
     }
 
     /**
@@ -146,7 +138,7 @@ class LoginController extends Controller
      *     },
      * )
      */
-    public function user(Request $request)
+    public function user(Request $request): JsonResponse
     {
         return response()->json([
             'user' => $request->user()
