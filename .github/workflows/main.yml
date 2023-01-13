@@ -9,5 +9,5 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Install requirements
-        run: git pull && composer install
+        run: export COMPOSER_HOME="$HOME/.config/composer" && git pull && composer install
         working-directory: /var/www/notes-api/
