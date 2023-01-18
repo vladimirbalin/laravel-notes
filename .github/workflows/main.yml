@@ -5,9 +5,23 @@ on:
     branches:
       - '*'
 jobs:
-  pull_and_build:
-    runs-on: self-hosted
+  pull_and_test:
+    runs-on: ubuntu-latest
+    uses: appleboy/ssh-action@master
+    with:
+      username: root
+      host: ${{ secrets.SSH_HOST }}
+      password: ${{ secrets.SSH_PASSWORD }}
     steps:
-      - name: Install requirements
-        run: export COMPOSER_HOME="$HOME/.config/composer" && git pull && composer install
-        working-directory: /var/www/notes-api/
+      - name: pull
+        with:
+          script: |
+            /root/stophp.sh &&
+            cd ${{ vars.WORKING_DIRECTORY }} &&
+            git pull
+      - name: test_and_generate_api_json
+        with:
+          script: |
+            php artisan test &&
+            php artisan openapi:generate &&
+            /root/starthp.sh

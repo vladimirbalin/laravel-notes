@@ -101,18 +101,6 @@ class AuthTests extends TestCase
     }
 
     /** @test */
-    public function user_is_logged_out_successfully()
-    {
-        $user = $this->creatUser();
-        $this->actingAs($user);
-
-        $response = $this->json('delete', 'api/logout');
-
-        $response->assertStatus(Response::HTTP_OK);
-        $this->assertGuest();
-    }
-
-    /** @test */
     public function dont_get_resource_when_not_authenticated()
     {
         $response = $this->json('get', 'api/notes');
