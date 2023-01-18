@@ -5,23 +5,19 @@ on:
     branches:
       - '*'
 jobs:
-  pull_and_test:
+  pull_test_generate_api_json:
     runs-on: ubuntu-latest
-    uses: appleboy/ssh-action@master
-    with:
-      username: root
-      host: ${{ secrets.SSH_HOST }}
-      password: ${{ secrets.SSH_PASSWORD }}
     steps:
-      - name: pull
+      - name: pull, test, generate api json
+        uses: appleboy/ssh-action@master
         with:
+          username: root
+          host: ${{ secrets.SSH_HOST }}
+          password: ${{ secrets.SSH_PASSWORD }}
           script: |
             /root/stophp.sh &&
             cd ${{ vars.WORKING_DIRECTORY }} &&
-            git pull
-      - name: test_and_generate_api_json
-        with:
-          script: |
+            git pull &&
             php artisan test &&
             php artisan openapi:generate &&
             /root/starthp.sh
