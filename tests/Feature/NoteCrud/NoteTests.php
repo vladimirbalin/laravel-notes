@@ -29,7 +29,7 @@ class NoteTests extends TestCase
             'created_by' => $this->user->id
         ];
 
-        $response = $this->json('post', 'api/notes', $payload);
+        $response = $this->json('post', route('notes.store'), $payload);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonStructure([
@@ -45,7 +45,7 @@ class NoteTests extends TestCase
     /** @test */
     public function retrieve_notes_successfully()
     {
-        $response = $this->json('get', 'api/notes');
+        $response = $this->json('get', route('notes.index'));
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
@@ -70,7 +70,7 @@ class NoteTests extends TestCase
         ];
         $note = Note::create($payload);
 
-        $response = $this->json('put', 'api/notes/' . $note->id, $payload);
+        $response = $this->json('put', route('notes.update', [$note->id]), $payload);
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
@@ -93,7 +93,7 @@ class NoteTests extends TestCase
         ];
         $note = Note::create($payload);
 
-        $response = $this->json('delete', 'api/notes/' . $note->id, $payload);
+        $response = $this->json('delete', route('notes.destroy', [$note->id]), $payload);
 
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseMissing('notes', ['id' => $note->id]);

@@ -18,13 +18,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index']);
 
-Route::post('register', [LoginController::class, 'register']);
-Route::post('login', [LoginController::class, 'login']);
+Route::post('register', [LoginController::class, 'register'])->name('register');
+Route::post('login', [LoginController::class, 'login'])->name('login');
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::get('user', [LoginController::class, 'user']);
+    Route::get('user', [LoginController::class, 'user'])->name('user');
 
     Route::apiResource('notes', NoteController::class)
         ->only(['index', 'store', 'update', 'destroy']);
-    Route::delete('logout', [LoginController::class, 'logout']);
 });

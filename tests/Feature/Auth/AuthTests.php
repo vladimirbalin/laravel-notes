@@ -14,14 +14,21 @@ class AuthTests extends TestCase
     /** @test */
     public function user_is_logged_in_successfully()
     {
+        // Arrange
         $user = $this->creatUser();
         $payload = [
             'name' => $user->name,
             'password' => 'password'
         ];
 
-        $response = $this->json('post', 'api/login', $payload);
+        // Act
+        $response = $this->json(
+            'post',
+            route('login'),
+            $payload
+        );
 
+        // Assert
         $response->assertJsonStructure([
             'user' => [
                 'id',
@@ -38,7 +45,7 @@ class AuthTests extends TestCase
     /** @test */
     public function user_failed_logging_in_with_wrong_credentials()
     {
-        $response = $this->json('post', 'api/login', [
+        $response = $this->json('post', route('login'), [
             'name' => 'wrong_name',
             'password' => 'wrong_password'
         ]);
@@ -62,7 +69,7 @@ class AuthTests extends TestCase
             'password_confirmation' => $password
         ];
 
-        $response = $this->json('post', 'api/register', $payload);
+        $response = $this->json('post', route('register'), $payload);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonStructure([
@@ -86,7 +93,7 @@ class AuthTests extends TestCase
         $user = $this->creatUser();
         $this->actingAs($user);
 
-        $response = $this->json('get', 'api/user');
+        $response = $this->json('get', route('user'));
 
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
@@ -103,7 +110,7 @@ class AuthTests extends TestCase
     /** @test */
     public function dont_get_resource_when_not_authenticated()
     {
-        $response = $this->json('get', 'api/notes');
+        $response = $this->json('get', route('notes.index'));
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
@@ -111,7 +118,7 @@ class AuthTests extends TestCase
     /** @test */
     public function has_validation_errors_when_providing_empty_fields()
     {
-        $response = $this->json('post', 'api/login', [
+        $response = $this->json('post', route('login'), [
             'name' => '',
             'password' => ''
         ]);
